@@ -18,7 +18,10 @@
       "path": "packages/application",
       "default": false,
       "package": "demoapp1",
-      "versionDescription": "My appPackage demoapp1"
+      "versionDescription": "My appPackage demoapp1",
+      "dependencies": [
+        { "package": "salesApp1", "versionNumber": "1.0.0.LATEST" }
+      ]
     }
   ],
   "name": "Unlock-automation",
