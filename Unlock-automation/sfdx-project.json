@@ -1,12 +1,32 @@
 {
   "packageDirectories": [
     {
-      "path": "force-app",
+      "path": "packages",
       "default": true
+    },
+    {
+      "versionName": "ver 0.1",
+      "versionNumber": "0.1.0.NEXT",
+      "path": "packages/application",
+      "default": false,
+      "package": "demoapp",
+      "versionDescription": "My appPackage"
+    },
+    {
+      "versionName": "ver 0.1",
+      "versionNumber": "0.1.0.NEXT",
+      "path": "packages/data",
+      "default": false,
+      "package": "salesApp1",
+      "versionDescription": "My Package1"
     }
   ],
   "name": "Unlock-automation",
   "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "67.0"
+  "sourceApiVersion": "67.0",
+  "packageAliases": {
+    "demoapp": "0HogL00000042PpSAI",
+    "salesApp1": "0HogL00000042RRSAY"
+  }
 }
