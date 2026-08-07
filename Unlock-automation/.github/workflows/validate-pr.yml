@@ -6,7 +6,7 @@ name: Validate PR (check-only deploy)
 # folder(s) changed and runs check-only deploy against those folders.
 on:
   pull_request:
-    branches: [develop]
+    branches: [DEV1]
     paths:
       - "packages/**"
 
