@@ -1,0 +1,24 @@
+<apex:page Controller="AccountSaveController">
+    <apex:form >
+    	<apex:pageBlock title="Acccount Contact Opportuniy Save">
+            <apex:pageBlockSection title="Account Block" collapsible="false">
+                <apex:inputField value="{!actObj.Name}"/>
+                <apex:inputField value="{!actObj.Type}"/>
+                <apex:inputField value="{!actObj.Industry}"/>
+            </apex:pageBlockSection>
+             <apex:pageBlockSection title="Contact Block" collapsible="false">
+                <apex:inputField value="{!contactObj.FirstName}"/>
+                <apex:inputField value="{!contactObj.LastName}"/>
+                <apex:inputField value="{!contactObj.Email}"/>
+            </apex:pageBlockSection>
+             <apex:pageBlockSection title="Contact Block" collapsible="false">
+                <apex:inputField value="{!oppObj.Name}"/>
+                <apex:inputField value="{!oppObj.StageName}"/>
+                <apex:inputField value="{!oppObj.CloseDate}"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons location="bottom">
+            	<apex:commandButton value="Save" action="{!actSave}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>        
+    </apex:form>
+</apex:page>

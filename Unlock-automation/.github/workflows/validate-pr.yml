@@ -1,0 +1,63 @@
+name: Validate PR (check-only deploy)
+
+# Gates the merge only. Does NOT create a package version — that happens
+# separately in deploy-to-qa.yml, batched, not per-PR.
+# Deliberately doesn't read sfdx-project.json — just checks which known
+# folder(s) changed and runs check-only deploy against those folders.
+on:
+  pull_request:
+    branches: [DEV1]
+    paths:
+      - "packages/**"
+
+concurrency:
+  group: pr-validate-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      paths: ${{ steps.detect.outputs.paths }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed folders
+        id: detect
+        run: |
+          chmod +x scripts/detect-changed-paths.sh
+          PATHS=$(scripts/detect-changed-paths.sh origin/${{ github.base_ref }} HEAD)
+          echo "paths=$PATHS" >> "$GITHUB_OUTPUT"
+          echo "Changed folders: $PATHS"
+
+  validate:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.paths != '[]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Salesforce CLI
+        run: npm install --global @salesforce/cli
+
+      - name: Authenticate QA org (SFDX Auth URL)
+        env:
+          SFDX_AUTH_URL_QA: ${{ secrets.SFDX_AUTH_URL_QA }}
+        run: |
+          echo "{\"sfdxAuthUrl\": \"$SFDX_AUTH_URL_QA\"}" > qa-auth.json
+          sf org login sfdx-url --sfdx-url-file qa-auth.json --alias qa
+          rm qa-auth.json
+
+      - name: Check-only deploy for each changed folder
+        run: |
+          PATHS='${{ needs.detect-changes.outputs.paths }}'
+          echo "$PATHS" | jq -r '.[]' | while read -r path; do
+            echo "Validating $path — check-only, no deployment, no package version created"
+            sf project deploy validate \
+              --source-dir "$path" \
+              -u ${{ secrets.USERNAME_QA }} \
+              --test-level RunLocalTests \
+              --wait 30
+          done
